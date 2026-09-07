@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Task List Page
+{% endblock %}
+
+{% block content %}
+<div class="container text-center">
+    <h4>{{ user.username }} Task List Page</h4>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table table-primary">
+                <tr>
+                    <th scope="col">S No</th>
+                    <th scope="col">TASK NUMBER</th>
+                    <th scope="col">TASK NAME</th>
+                    <th scope="col">DESCRIPTION</th>
+                    <th scope="col">TASK PRIORITY</th>
+                    <th scope="col">TASK STATUS</th>
+                    <th scope="col">TASK ADDED ON</th>
+                    <th scope="col">UPDATE TASK</th>
+                    <th scope="col">DELETE TASK</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {% for task in tasks %}
+                <tr>
+                    <td>{{ task.id }}</td>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ task.task_name }}</td>
+                    <td>{{ task.task_description }}</td>
+                    <td>{{ task.task_priority }}</td>
+                    {% if task.task_status %}
+                    <td class="text-success">Completed</td>
+                    {% else %}
+                    <td class="text-danger">Pending</td>
+                    {% endif %}
+                    <td>{{ task.task_added_at }}</td>
+                    <div class="ms-3">
+                        <td>
+                            <a href="{% url 'task-update' task.pk %}" class="btn btn-success">Task Update Button</a>
+                        </td>
+                    </div>
+                    <td>
+                        <a href="{% url 'task-delete' task.pk %}" class="btn btn-danger">Task Delete Button</a>
+                    </td>
+                </tr>
+            </tbody>
+            {% endfor %}
+    
+        </table>
+    </div>
+    <a href="{% url 'task-create' %}" class="btn btn-primary mt-2">Add Task</a>
+    <a href="{% url 'task-completed' %}" class="btn btn-success mt-2">Task Completed Page</a>
+    <a href="{% url 'home' %}" class="btn btn-info mt-2">Home Page</a>
+    <a href="{% url 'logout' %}" class="btn btn-danger mt-2">Logout</a>
+</div>
+
+{% endblock content %}

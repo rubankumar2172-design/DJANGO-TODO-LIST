@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}
+
+{% if form.instance.pk %} Task Update Page {% else %} Task Create Page {% endif %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container text-center">
+    <h4>
+        {% if form.instance.pk %} Task Update Page {% else %} Task Create Page {% endif %}
+    </h4>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        {% if form.instance.pk %}
+        <button type="submit" class="btn btn-success">Update Task</button>
+        <a href="{% url 'task-list' %}" class="btn btn-warning">No, Take Me Back..</a>
+        {% else %}
+        <button type="submit" class="btn btn-primary">Add Task</button>
+        <a href="{% url 'task-list' %}" class="btn btn-warning mt-2">No, Take Me Back..</a>
+        {% endif %}
+    </form>
+    <a href="{% url 'home' %}" class="btn btn-info mt-2">Home Page</a>
+</div>
+{% endblock content %}

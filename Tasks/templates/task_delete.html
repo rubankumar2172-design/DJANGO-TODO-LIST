@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}
+Task Confirm Delete Page
+{% endblock %}
+
+{% block content %}
+<div class="container text-center mt-2">
+    <h4>Are You Sure You want to Delete "{{ object.task_name }}..?" with Task Priority of "{{ object.task_priority }}.?"</h4>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-danger">Confirm, Delete</button>
+        <a href="{% url 'task-list' %}" class="btn btn-warning">No, take Me Back.</a>
+    </form>
+</div>
+{% endblock content %}

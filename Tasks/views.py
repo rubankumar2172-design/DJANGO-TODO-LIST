@@ -1,0 +1,80 @@
+from django.shortcuts import render,redirect
+from django.contrib.auth import authenticate, login, logout
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from .forms import *
+from .models import *
+
+
+def Home_View(request):
+    return render(request, 'home.html')
+
+def Base_View(request):
+    return render(request, 'base.html')
+
+def Signup_View(request):
+    if request.method == "POST":
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect ('login')
+    else:
+        form = SignupForm()
+
+    return render (request, 'signup.html',{'form':form})
+
+def Login_View(request):
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username = username, password = password)
+            if user is not None:
+                login(request,user)
+                return redirect ('home')
+    else:
+        form = LoginForm()
+
+    return render (request,'login.html',{'form':form})
+
+def Logout_View(request):
+    logout(request)
+    return redirect ('home')
+
+class TaskListView(ListView):
+    model = TaskModel
+    template_name = 'task_list.html'
+    context_object_name = 'tasks'
+
+    def get_queryset(self):
+        # Restrict queryset to the current user
+        return TaskModel.objects.filter(user=self.request.user)
+
+class TaskCreate_View(CreateView):
+    model = TaskModel
+    template_name = 'task_create.html'
+    fields = "__all__"
+    context_object_name = 'task_create'
+    success_url = reverse_lazy(('task-list'))
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+class TaskUpdate_View(UpdateView):
+    model = TaskModel
+    template_name = 'task_create.html'
+    fields = "__all__"
+    context_object_name = 'task_update'
+    success_url = reverse_lazy(('task-list'))
+
+class TaskDelete_View(DeleteView):
+    model = TaskModel
+    template_name = 'task_delete.html'
+    fields = "__all__"
+    context_object_name = 'task_delete'
+    success_url = reverse_lazy(('task-list'))
+
+def TaskCompleted_View(request):
+    tasks = TaskModel.objects.filter(task_status=True)
+    return render (request,'task_completed.html',{'tasks':tasks})

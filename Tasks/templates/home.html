@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Home Page
+{% endblock %}
+
+{% block content %}
+<div class="container text-center mt-2">
+    {% if user.is_authenticated and user.is_staff %}
+    <h4 class="text-success">Welcome Back {{user.username}}, <strong> You have Admin Access.</strong></h4>
+    <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+    <a href="{% url 'admin:index' %}" class="btn btn-primary">Admin Page</a>
+    <a href="{% url 'task-list' %}" class="btn btn-secondary">View Tasks</a>
+
+    {% elif user.is_authenticated %}
+    
+    <h4>Welcome {{user.username}} </h4>
+    <h4>Your Email Id is : {{user.email}} </h4>
+    <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+    <a href="{% url 'task-list' %}" class="btn btn-secondary">View Tasks</a>
+
+    {% else %}
+
+    <h4>This is Home Page.</h4>
+    <h4 class="mt-3">Login To Continue</h4>
+    <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+    <h4 class="mt-3">Don't Have an Account.?</h4>
+    <a href="{% url 'signup' %}" class="btn btn-secondary">Signup</a>
+
+    {% endif %}
+
+</div>
+{% endblock content %}
