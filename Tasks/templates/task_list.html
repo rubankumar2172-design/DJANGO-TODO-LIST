@@ -11,7 +11,6 @@ Task List Page
         <table class="table table-bordered table-hover">
             <thead class="table table-primary">
                 <tr>
-                    <th scope="col">S No</th>
                     <th scope="col">TASK NUMBER</th>
                     <th scope="col">TASK NAME</th>
                     <th scope="col">DESCRIPTION</th>
@@ -25,16 +24,11 @@ Task List Page
             <tbody class="table-group-divider">
                 {% for task in tasks %}
                 <tr>
-                    <td>{{ task.id }}</td>
                     <td>{{ forloop.counter }}</td>
                     <td>{{ task.task_name }}</td>
                     <td>{{ task.task_description }}</td>
                     <td>{{ task.task_priority }}</td>
-                    {% if task.task_status %}
-                    <td class="text-success">Completed</td>
-                    {% else %}
-                    <td class="text-danger">Pending</td>
-                    {% endif %}
+                    <td>{{ task.get_task_status_display }}</td>
                     <td>{{ task.task_added_at }}</td>
                     <div class="ms-3">
                         <td>
