@@ -49,7 +49,28 @@ class TaskListView(ListView):
 
     def get_queryset(self):
         # Restrict queryset to the current user
-        return TaskModel.objects.filter(user=self.request.user)
+        queryset = TaskModel.objects.filter(user=self.request.user)
+        form = TaskFilterForm(self.request.GET)
+
+        if form.is_valid():
+            data = form.cleaned_data
+            if data.get('task_name'):
+                queryset = queryset.filter(task_name__icontains=data['task_name'])
+            if data.get('task_status'):
+                queryset = queryset.filter(task_status=data['task_status'])
+            if data.get('task_priority'):
+                queryset = queryset.filter(task_priority=data['task_priority'])
+            if data.get('task_description'):
+                queryset = queryset.filter(task_description__icontains=data['task_description'])
+            if data.get('task_added_at'):
+                queryset = queryset.filter(task_added_at__date=data['task_added_at'])
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filter_form'] = TaskFilterForm(self.request.GET)
+        return context
 
 class TaskCreate_View(CreateView):
     model = TaskModel

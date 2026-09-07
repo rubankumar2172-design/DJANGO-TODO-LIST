@@ -7,7 +7,31 @@ Task List Page
 {% block content %}
 <div class="container text-center">
     <h4>{{ user.username }} Task List Page</h4>
-    <div class="table-responsive">
+    <form method="get" class="row g-2 mb-4">
+        <div class="col-md-2">{{ filter_form.task_name }}</div>
+        <div class="col-md-2">{{ filter_form.task_status }}</div>
+        <div class="col-md-2">{{ filter_form.task_priority }}</div>
+        <div class="col-md-2">{{ filter_form.task_description }}</div>
+        <div class="col-md-2">{{ filter_form.task_added_at }}</div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{% url 'task-list' %}" class="btn btn-secondary">Reset</a>
+        </div>
+    </form>
+
+    {% for task in tasks %}
+    <tr>
+        <td class="text-success">{{ task.task_name }}</td>
+        <td class="text-success">{{ task.get_task_priority_display }}</td>
+        <td class="text-success">{{ task.get_task_status_display }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="3">No tasks match your filters.</td>
+    </tr>
+    {% endfor %}
+
+    <div class="table-responsive mt-3">
         <table class="table table-bordered table-hover">
             <thead class="table table-primary">
                 <tr>
@@ -41,7 +65,7 @@ Task List Page
                 </tr>
             </tbody>
             {% endfor %}
-    
+
         </table>
     </div>
     <a href="{% url 'task-create' %}" class="btn btn-primary mt-2">Add Task</a>
