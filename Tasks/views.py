@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from .forms import *
 from .models import *
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 def Home_View(request):
     return render(request, 'home.html')
@@ -42,7 +42,8 @@ def Logout_View(request):
     logout(request)
     return redirect ('home')
 
-class TaskListView(ListView):
+class TaskListView(LoginRequiredMixin,ListView):
+    login_url = reverse_lazy('login')
     model = TaskModel
     template_name = 'task_list.html'
     context_object_name = 'tasks'
@@ -72,7 +73,8 @@ class TaskListView(ListView):
         context['filter_form'] = TaskFilterForm(self.request.GET)
         return context
 
-class TaskCreate_View(CreateView):
+class TaskCreate_View(LoginRequiredMixin,CreateView):
+    login_url = reverse_lazy('login')
     model = TaskModel
     template_name = 'task_create.html'
     fields = ['task_name', 'task_priority', 'task_status', 'task_description']
@@ -82,20 +84,18 @@ class TaskCreate_View(CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-class TaskUpdate_View(UpdateView):
+class TaskUpdate_View(LoginRequiredMixin,UpdateView):
+    login_url = reverse_lazy('login')
     model = TaskModel
     template_name = 'task_create.html'
     fields = "__all__"
     context_object_name = 'task_update'
     success_url = reverse_lazy(('task-list'))
 
-class TaskDelete_View(DeleteView):
+class TaskDelete_View(LoginRequiredMixin,DeleteView):
+    login_url = reverse_lazy('login')
     model = TaskModel
     template_name = 'task_delete.html'
     fields = "__all__"
     context_object_name = 'task_delete'
     success_url = reverse_lazy(('task-list'))
-
-def TaskCompleted_View(request):
-    tasks = TaskModel.objects.filter(task_status=True)
-    return render (request,'task_completed.html',{'tasks':tasks})
